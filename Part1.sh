@@ -50,10 +50,15 @@ do
 					"2")
 						echo 
 						echo "Криптозоология:"
+						egrep \(^\($group\).*$\) ./labfiles/Криптозоология/tests/TEST-1 | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort | sed 's/^.*[1-9].//g'
+						#Если нужен список вместе с кол-вом попыток
+						#egrep \(^\($group\).*$\) ./labfiles/Криптозоология/tests/TEST-1 | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort
 
 						echo
 						echo "Пивоварение:"
-
+						egrep \(^\($group\).*$\) ./labfiles/Пивоварение/tests/TEST-1 | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort | sed 's/^.*[1-9].//g'
+						#Если нужен список вместе с кол-вом попыток
+						#egrep \(^\($group\).*$\) ./labfiles/Пивоварение/tests/TEST-1 | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort
 					;;
 
 					*)
