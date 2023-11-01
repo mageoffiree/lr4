@@ -1,5 +1,21 @@
 #!/bin/bash
 
+function isElementInArray {
+	for elem in ${namesArray[@]}; do
+		if [ $elem = $1 ]
+		then
+			searchResult=true
+		fi
+	done
+}
+
+function addLineInArray {
+	if [ "$searchResult" = false ]
+	then
+		namesArray+=( $1 )
+	fi
+}
+
 bMain=true
 
 while $bMain;
@@ -29,25 +45,60 @@ do
 		case "$name" in
 			"0") bTask1=false ;;
 			*)
-			buffer=$(grep -rh "$name" ./labfiles/Криптозоология/tests)
+			buffer=$(grep -rhi "$name" ./labfiles/Криптозоология/tests)
 			if [ -n "$buffer" ]
 			then
 			
 				declare -a namesArray
-				grep -rh "$name" ./labfiles/Криптозоология/tests | sed 's/.*;\($name..\);*./\1/' | xargs -f addLineInArray
-			
-				for elem in ${namesArray[@]}; do
-					summ=0
-					grep -rh "$elem" ./labfiles/Криптозоология/tests | grep ';[3-5]$' | awk -F";" '{summ += $NF}'
-					summ=$((100*summ/4))
-					echo "Средний балл по Криптозоологии студента $name: $summ" | sed 's/..$/.&/;t' -e 's/.$/.0&/'
-					summ=0
-					grep -rh "$elem" ./labfiles/Пивоварение/tests | grep ';[3-5]$' | awk -F";" '{summ += $NF}'
-					summ=$((100*summ/4))
-					echo "Средний балл по Пивоварению студента $name: $summ" | sed 's/..$/.&/;t' -e 's/.$/.0&/'
+				declare -a namesArrayRaw
+				
+				namesArrayRaw+=( $(grep -rh "$name" ./labfiles/Криптозоология/tests | sed "s/.*;\($name..\);.*/\1/") )
+				for nameRaw in ${namesArrayRaw[@]}; do
+					
+					searchResult=false
+					for elem in ${namesArray[@]}; do
+						if [ $nameRaw = $elem ]
+						then
+							searchResult=true
+						fi
+					done
+					
+					if [ "$searchResult" = false ]
+					then
+						namesArray+=( $nameRaw )
+					fi
+					
 				done
 				
+				declare -a marksArray
+				for elem in ${namesArray[@]}; do
+					
+					marksArray=()
+					summ=0
+					
+					marksArray+=( $(grep -rh "$elem" ./labfiles/Криптозоология/tests | grep ';[3-5]$' | sed "s/.*;\([3-5]\)$/\1/") )
+					for i in ${marksArray[@]}; do
+						summ=$(( $summ + $i ))
+					done
+					
+					summ=$((100*summ/4))
+					echo "Средний балл по Криптозоологии студента $name: $summ" | sed 's/\(..\)$/\.\1/'
+					
+					summ=0
+					marksArray=()
+					
+					marksArray+=( $(grep -rh "$elem" ./labfiles/Пивоварение/tests | grep ';[3-5]$' | sed "s/.*;\([3-5]\)$/\1/") )
+					for i in ${marksArray[@]}; do
+						summ=$(( $summ + $i ))
+					done
+					
+					summ=$((100*summ/4))
+					echo "Средний балл по Пивоварению студента $name: $summ" | sed 's/\(..\)$/\.\1/'
+				done
+				
+				unset marksArray
 				unset namesArray
+				unset namesArrayRaw
 				bTask1=false
 				
 			else
@@ -73,51 +124,56 @@ do
 			"0") bTask2=false ;;
 			*)
 		
-			buffer=$(grep -rh "$group" ./labfiles/Криптозоология/tests)
-			if [ -n "$buffer" ]
+			buffer=$(find ./labfiles/Криптозоология/ -name "$group-attendance")
+			if [ -n "$buffer" ]  #если строка не пустая
 			then
 				
-				declare -a attandanceArray
+				declare -a attendanceArray
 				
-				for i in {0..18}
+				for i in {0..17}
 				do
-					grep -rh "$group" ./labfiles/Криптозоология/tests | grep -c ' .{$((i-1))}.*\$' | awk '$attandanceArray[$i]=$1'
+					attendanceArray+=( $(find ./labfiles/Криптозоология/ -name "$group-attendance" | xargs grep -c "[0-1]\{$i\}1[0-1]\{$((17-i))\}") )
 				done
 				
-				index=0
-				maxCount=${attandanceArray[0]}
 				
-				for i in {1..18}
+				maxIndex=1
+				maxCount=${attendanceArray[0]}
+				
+				for i in {1..17}
 				do
-					if (( ${attandanceArray[${i}]} -gt $maxCount ))
+					if (($maxCount<${attendanceArray[$i]}))
 					then
-						maxCount=${attandanceArray[${i}]}
-						index=($i)
+						maxIndex=($((i+1)))
+						maxCount=${attendanceArray[$i]}
 					fi
 				done
 				
-				echo "Занятие с максимальной посещаемостью на Криптозоологии для группы $group: $((index+1))"
+				echo "Занятие с максимальной посещаемостью на Криптозоологии для группы $group: $maxIndex."
+				echo "Число студентов, посетивших занятие: $maxCount"
 				
-				for i in {1..18}
+				attendanceArray=()
+				
+				for i in {0..17}
 				do
-					grep -rh "$group" ./labfiles/Пивоварение/tests | grep -c ' .{\$((i-1))}.*$' | awk '$attandanceArray[$i]=$1'
+					attendanceArray+=( $(find ./labfiles/Пивоварение/ -name "$group-attendance" | xargs grep -c "[0-1]\{$i\}1[0-1]\{$((17-i))\}") )
 				done
 				
-				index=0
-				maxCount=${attandanceArray[0]}
+				maxIndex=1
+				maxCount=${attendanceArray[0]}
 				
-				for i in {1..18}
+				for i in {1..17}
 				do
-					if (( ${attandanceArray[${i}]} -gt $maxCount ))
+					if (($maxCount<${attendanceArray[$i]}))
 					then
-						maxCount=${attandanceArray[${i}]}
-						index=($i)
+						maxIndex=($((i+1)))
+						maxCount=${attendanceArray[$i]}
 					fi
 				done
 				
-				echo "Занятие с максимальной посещаемостью на Пивоварении для группы $group: $((index+1))"
+				echo "Занятие с максимальной посещаемостью на Пивоварении для группы $group: $maxIndex."
+				echo "Число студентов, посетивших занятие: $maxCount"
 				
-				unset $attandanceArray
+				unset $attendanceArray
 				bTask2=false
 				
 			else
@@ -134,7 +190,7 @@ do
 		while $bTask3;
 		do
 		
-		echo "Введите номер группы \[A-XX-XX\]:"
+		echo "Введите номер группы [A-XX-XX]:"
 		echo "0, чтобы вернуться к выбору действия."
 		
 		read group
@@ -143,51 +199,56 @@ do
 			"0") bTask3=false ;;
 			*)
 		
-			buffer=$(grep -rh "$group" ./labfiles/Криптозоология/tests)
-			if [ -n "$buffer" ]
+			buffer=$(find ./labfiles/Криптозоология/ -name "$group-attendance")
+			if [ -n "$buffer" ]  #если строка не пустая
 			then
 				
-				declare -a attandanceArray
+				declare -a attendanceArray
 				
-				for i in {0..18}
+				for i in {0..17}
 				do
-					grep -rh "$group" ./labfiles/Криптозоология/tests | grep -c ' .{\$((i-1))}.*$' | awk '$attandanceArray[$i]=$1'
+					attendanceArray+=( $(find ./labfiles/Криптозоология/ -name "$group-attendance" | xargs grep -c "[0-1]\{$i\}1[0-1]\{$((17-i))\}") )
 				done
 				
-				index=0
-				minCount=${attandanceArray[0]}
 				
-				for i in {1..18}
+				minIndex=1
+				minCount=${attendanceArray[0]}
+				
+				for i in {1..17}
 				do
-					if [${attandanceArray[$i]} -lt $minCount]
+					if ((${attendanceArray[$i]}<$minCount))
 					then
-						minCount=${attandanceArray[$i]}
-						index=$i
+						minIndex=($((i+1)))
+						minCount=${attendanceArray[$i]}
 					fi
 				done
 				
-				echo "Занятие с максимальной посещаемостью на Криптозоологии для группы $group: $index"
+				echo "Занятие с минимальной посещаемостью на Криптозоологии для группы $group: $minIndex."
+				echo "Число студентов, посетивших занятие: $minCount"
 				
-				for i in {0..18}
+				attendanceArray=()
+				
+				for i in {0..17}
 				do
-					grep -rh "$group" ./labfiles/Пивоварение/tests | grep -c ' .{\$((i-1))}.*$' | awk '$attandanceArray[$i]=$1'
+					attendanceArray+=( $(find ./labfiles/Пивоварение/ -name "$group-attendance" | xargs grep -c "[0-1]\{$i\}1[0-1]\{$((17-i))\}") )
 				done
 				
-				index=0
-				minCount=${attandanceArray[0]}
+				minIndex=1
+				minCount=${attendanceArray[0]}
 				
-				for i in {1..18}
+				for i in {1..17}
 				do
-					if [${attandanceArray[$i]} -lt $minCount]
+					if ((${attendanceArray[$i]}<$minCount))
 					then
-						minCount=${attandanceArray[i]}
-						index=$i
+						minIndex=($((i+1)))
+						minCount=${attendanceArray[$i]}
 					fi
 				done
 				
-				echo "Занятие с максимальной посещаемостью на Пивоварении для группы $group: $index"
+				echo "Занятие с минимальной посещаемостью на Пивоварении для группы $group: $minIndex."
+				echo "Число студентов, посетивших занятие: $minCount"
 				
-				unset $attandanceArray
+				unset $attendanceArray
 				bTask3=false
 				
 			else
@@ -207,23 +268,3 @@ do
 	esac
 	
 done
-
-
-function isElementInArray {
-	local searchResult=false
-	for elem in ${namesArray[@]}; do
-		if [elem -eq $1]
-		then
-			searchResult=true
-		fi
-	return searchResult
-	done
-}
-
-function addLineInArray {
-	local flag=$(isElementInArray $1)
-	if [flag -eq false]
-	then
-		namesArray+=( $1 )
-	fi
-}
