@@ -1,8 +1,8 @@
 #!/bin/bash
 
-bMain=true
+bM=true
 
-while $bMain;
+while $bM;
 do
     echo
 	echo "Приветвуем вас в лучшей программе для работы с вашими файлами!"
@@ -16,12 +16,13 @@ do
 
 	case "$number" in
 		"0") 
-    		bMain=false
+    		bM=false
 		;;
 
 		"1")
 	    	chmod a+x ./Part1.sh
             source ./Part1.sh
+
 		;;
 
 		"2")
