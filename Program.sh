@@ -7,7 +7,7 @@ do
     echo
 	echo "Приветвуем вас в лучшей программе для работы с вашими файлами!"
     echo
-	echo "1 - Перваая часть;"
+	echo "1 - Первая часть;"
     echo "2 - Вторая часть;"
     echo "0 - Выход."
 	echo
@@ -20,14 +20,12 @@ do
 		;;
 
 		"1")
-	    	chmod a+x ./Part1.sh
-            source ./Part1.sh
+            ./Part1.sh
 
 		;;
 
 		"2")
-			chmod a+x ./Part2.sh
-            source ./Part2.sh
+            ./Part2.sh
 		;;
 
 		*)
