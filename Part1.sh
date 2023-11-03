@@ -68,9 +68,9 @@ do
 						do
 							echo
 							echo "Тест $i:"
-							egrep \(^\($group\).*$\) ./labfiles/Криптозоология/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort | sed 's/^.*[1-9].//g'
+							#egrep \(^\($group\).*$\) ./labfiles/Криптозоология/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort | sed 's/^.*[1-9].//g'
 							#Если нужен список вместе с кол-вом попыток
-							#egrep \(^\($group\).*$\) ./labfiles/Криптозоология/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort
+							egrep \(^\($group\).*$\) ./labfiles/Криптозоология/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort
 						done
 
 						echo
@@ -80,9 +80,9 @@ do
 						do
 							echo
 							echo "Тест $i:"
-							egrep \(^\($group\).*$\) ./labfiles/Пивоварение/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort | sed 's/^.*[1-9].//g'
+							#egrep \(^\($group\).*$\) ./labfiles/Пивоварение/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort | sed 's/^.*[1-9].//g'
 							#Если нужен список вместе с кол-вом попыток
-							#egrep \(^\($group\).*$\) ./labfiles/Пивоварение/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort
+							egrep \(^\($group\).*$\) ./labfiles/Пивоварение/tests/TEST-$i | sed -e 's/A-..-...//g' -e 's/.20[1,2][1-9].*$//g' | uniq -c | sort
 						done
 						
 					;;
