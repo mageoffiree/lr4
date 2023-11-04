@@ -5,10 +5,11 @@ bMain=true
 while $bMain;
 do
 	
+	#создаем и заполняем массив предметов
 	declare -a subjects
 	subjects+=( $(find ./labfiles/ -maxdepth 1 -type d -not -name "labfiles" -not -name "students" | sed 's/\(.*\)$/\1\//') )
 	
-	echo "Необходимо выбрать действие:"
+	echo "Выберите пункт:"
 	echo "1 - Средняя оценка студента"
 	echo "2 - Занятие с максимальной посещаемостью группы"
 	echo "3 - Занятие с минимальной посещаемостью группы"
