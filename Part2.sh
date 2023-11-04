@@ -81,7 +81,7 @@ do
 						
 						#получаем среднее
 						summ=$((100*summ/testsNumber))
-						echo "Средний балл по предмету студента $elem: $summ" | sed 's/\(..\)$/\.\1/'
+						echo "Средний балл по предмету $className студента $elem: $summ" | sed 's/\(..\)$/\.\1/'
 						
 					done
 					

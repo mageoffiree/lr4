@@ -26,7 +26,6 @@ do
 			group=$( echo $group | sed -e 's/а/A/' -e 's/А/A/' -e 's/a/A/' )
 			#ищем записи о группе
 			buffer=$(find "${subjects[0]}" -name "$group-attendance")
-			echo $buffer
 			if [ -n "$buffer" ]  #если строка не пустая
 			then
 				groupEnter=false
