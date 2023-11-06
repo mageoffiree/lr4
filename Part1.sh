@@ -75,13 +75,13 @@ do
 					for student in ${namesArray[@]}; do
 					
 					#ищем записи об успешных сдачах теста у студента
-					foundTest=$( grep "$student;20..;.\{1,2\};[3-5];" "$subj"/tests/TEST-$i )
+					foundTest=$( grep "$student;20..;.\{1,2\};[3-5]" "$subj"/tests/TEST-$i | sed '/^ *$/d')
 					#если записи не найдено, добавляем в массив несдавших
-					if [ -n foundTest ]
+					if [ -z $foundTest ]
 					then
 						
 						searchResult=false
-						for elem in ${namesArray[@]}; do
+						for elem in ${studentsFailed[@]}; do
 						if [ $student = $elem ]
 						then
 							searchResult=true
@@ -101,12 +101,16 @@ do
 					
 				done
 				
-				echo "Студенты, не сдавшие хотя бы один тест по предмету $className:"
-				for (( i=0; i<${#studentsFailed[@]}; i++ ))
-				do
-					echo "${studentsFailed[i]} (${testFailed[i]})"
-				done
-				echo
+				if [[ ${#studentsFailed[@]} -gt 0 ]]
+				then
+					echo "Студенты, не сдавшие хотя бы один тест по предмету $className:"
+					for (( i=0; i<${#studentsFailed[@]}; i++ ))
+					do
+						echo "${studentsFailed[i]} (${testFailed[i]})"
+					done
+				else
+					echo "Нет студентов, не сдавших хотя бы один тест по предмету $className."
+				fi
 				
 			done
 			
