@@ -76,7 +76,7 @@ do
 					#ищем записи об успешных сдачах теста у студента
 					foundTest=$( grep "$student;20..;.\{1,2\};[3-5]" "$subj"/tests/TEST-$i | sed '/^ *$/d')
 					#если записи не найдено, добавляем в массив несдавших
-					if [ -z $foundTest ]
+					if [ -z "$foundTest" ]
 					then
 						
 						searchResult=false
