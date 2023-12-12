@@ -1,0 +1,6 @@
+﻿  lr6.cpp
+D:\7sem\OS\lr6\lr6\lr6.cpp(104,2): warning C4551: в вызове функции отсутствует список аргументов
+D:\7sem\OS\lr6\lr6\lr6.cpp(136,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+D:\7sem\OS\lr6\lr6\lr6.cpp(172,5): warning C4551: в вызове функции отсутствует список аргументов
+D:\7sem\OS\lr6\lr6\lr6.cpp(215,5): warning C4551: в вызове функции отсутствует список аргументов
+  lr6.vcxproj -> D:\7sem\OS\lr6\x64\Debug\lr6.exe
